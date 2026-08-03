@@ -1,36 +1,50 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Archivo, Bodoni_Moda } from 'next/font/google'
+import { GrainOverlay } from '@/components/grain-overlay'
 import './globals.css'
 
+// One grotesque family. The `wdth` axis gives us the condensed display
+// widths from the mockups without adding a second font family.
+const archivo = Archivo({
+  subsets: ['latin'],
+  axes: ['wdth'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
+
+// Didone italic, used only for the acid-green accent words.
+const bodoni = Bodoni_Moda({
+  subsets: ['latin'],
+  style: ['italic'],
+  variable: '--font-bodoni',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'Kaito Mercer — Senior Web Developer',
+  description:
+    'Senior web developer crafting considered digital experiences with precision, performance, and intent. Selected work in interface engineering, WebGL, and motion design.',
   generator: 'v0.app',
+  openGraph: {
+    title: 'Kaito Mercer — Senior Web Developer',
+    description:
+      'Senior web developer crafting considered digital experiences with precision, performance, and intent.',
+    type: 'website',
+  },
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
     apple: '/apple-icon.png',
   },
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  colorScheme: 'dark',
+  themeColor: '#0a0a0a',
 }
 
 export default function RootLayout({
@@ -39,8 +53,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
+    <html lang="en" className={`bg-background ${archivo.variable} ${bodoni.variable}`}>
+      <body className="bg-background text-foreground antialiased">
+        <GrainOverlay />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
