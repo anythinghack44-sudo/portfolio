@@ -4,6 +4,8 @@ import { About } from '@/components/sections/about'
 import { Work } from '@/components/sections/work'
 import { Lab } from '@/components/sections/lab'
 import { Capabilities } from '@/components/sections/capabilities'
+import { Contact } from '@/components/sections/contact'
+import { SiteFooter } from '@/components/site-footer'
 
 export default function Page() {
   return (
@@ -15,7 +17,9 @@ export default function Page() {
         <Work />
         <Lab />
         <Capabilities />
+        <Contact />
       </main>
+      <SiteFooter />
     </>
   )
 }
