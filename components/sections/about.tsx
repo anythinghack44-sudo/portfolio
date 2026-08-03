@@ -1,19 +1,13 @@
-import Image from 'next/image'
 import { about } from '@/lib/content'
+import { DeveloperPortrait } from '@/components/developer-portrait'
 
 export function About() {
   return (
     <section id="about" className="gutter py-20 lg:py-28">
       <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
-        {/* Portrait — grayscale editorial photo */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-surface lg:aspect-auto lg:min-h-[36rem]">
-          <Image
-            src="/placeholder.svg?height=1200&width=960"
-            alt="Portrait of Kaito Mercer working at his desk"
-            fill
-            className="object-cover grayscale"
-            sizes="(min-width: 1024px) 40vw, 100vw"
-          />
+        {/* Portrait — geometric developer illustration */}
+        <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:min-h-[36rem]">
+          <DeveloperPortrait className="h-full w-full" />
         </div>
 
         {/* Content column */}
