@@ -4,7 +4,7 @@ import { work } from '@/lib/content'
 export function Work() {
   return (
     <section id="work" className="gutter py-20 lg:py-28">
-      <div className="mb-16 border-t border-border pt-6 lg:mb-20 lg:pt-8">
+      <div className="mb-12 border-t border-border pt-6 lg:mb-16 lg:pt-8">
         <p className="type-label text-meta">{work.label}</p>
       </div>
 
@@ -13,9 +13,9 @@ export function Work() {
           <article key={project.index}>
             <Link
               href={project.href}
-              className="group relative block border-t border-border py-8 transition-colors hover:bg-surface/50 lg:py-10"
+              className="group relative block border-t border-border py-10 transition-colors hover:bg-surface/50 lg:py-12"
             >
-              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 lg:grid-cols-[auto_1fr_auto_auto_auto] lg:gap-10">
+              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 lg:grid-cols-[auto_1fr_auto_auto_auto] lg:gap-12">
                 {/* Index number */}
                 <span className="type-label text-meta">{project.index}</span>
 
@@ -30,7 +30,7 @@ export function Work() {
 
                 {/* Thumbnail - only on featured project, desktop only */}
                 {project.featured && (
-                  <div className="relative hidden aspect-[16/9] w-60 overflow-hidden bg-muted lg:block">
+                  <div className="relative hidden aspect-[16/9] w-64 overflow-hidden bg-muted lg:block">
                     <div className="absolute inset-0 flex items-center justify-center">
                       {/* Placeholder architectural thumbnail */}
                       <svg

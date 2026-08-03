@@ -4,7 +4,7 @@ import { DeveloperPortrait } from '@/components/developer-portrait'
 export function About() {
   return (
     <section id="about" className="gutter py-20 lg:py-28">
-      <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
+      <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-16">
         {/* Portrait — geometric developer illustration */}
         <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:min-h-[36rem]">
           <DeveloperPortrait className="h-full w-full" />
@@ -18,12 +18,12 @@ export function About() {
           </div>
 
           {/* Statement */}
-          <h2 className="type-statement mt-8 text-balance text-foreground lg:mt-10">
+          <h2 className="type-statement mt-10 text-balance text-foreground lg:mt-12">
             {about.statement}
           </h2>
 
           {/* Body paragraphs */}
-          <div className="mt-8 space-y-6 lg:mt-10 lg:space-y-7">
+          <div className="mt-10 space-y-7 lg:mt-12 lg:space-y-8">
             {about.paragraphs.map((paragraph, i) => (
               <p key={i} className="max-w-xl text-pretty leading-relaxed text-body">
                 {paragraph}
@@ -32,10 +32,10 @@ export function About() {
           </div>
 
           {/* Stats row — pinned to bottom on desktop */}
-          <div className="mt-12 lg:mt-auto lg:pt-16">
-            <div className="flex items-stretch gap-8 lg:gap-10">
+          <div className="mt-14 lg:mt-auto lg:pt-20">
+            <div className="flex items-stretch gap-10 lg:gap-12">
               {about.stats.map((stat, i) => (
-                <div key={stat.label} className="flex items-stretch gap-8 lg:gap-10">
+                <div key={stat.label} className="flex items-stretch gap-10 lg:gap-12">
                   {i > 0 && (
                     <span aria-hidden="true" className="w-px self-stretch bg-hairline" />
                   )}

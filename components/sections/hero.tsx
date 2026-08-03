@@ -2,7 +2,7 @@ import { hero, site } from '@/lib/content'
 
 export function Hero() {
   return (
-    <section className="gutter relative flex min-h-svh flex-col pt-20 pb-10 lg:pt-24 lg:pb-14">
+    <section className="gutter relative flex min-h-svh flex-col pt-20 pb-12 lg:pt-24 lg:pb-16">
       {/* Availability badge, aligned to the right edge under the nav */}
       <div className="absolute inset-x-0 top-[5.5rem] lg:top-28">
         <div className="gutter flex justify-end">
@@ -22,7 +22,7 @@ export function Hero() {
         <span className="type-accent block">{hero.accentLine}</span>
       </h1>
 
-      <div className="mt-8 flex items-end justify-between gap-6 lg:mt-10 lg:gap-8">
+      <div className="mt-10 flex items-end justify-between gap-6 lg:mt-12 lg:gap-8">
         <div className="flex items-center gap-6 lg:gap-10">
           <p className="max-w-[28rem] text-pretty leading-relaxed text-foreground/85 lg:text-lead lg:leading-relaxed">
             {hero.intro}

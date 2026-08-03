@@ -22,13 +22,13 @@ export function SiteFooter() {
   }, [])
 
   return (
-    <footer className="gutter border-t border-border py-6">
+    <footer className="gutter border-t border-border py-8">
       <div className="flex items-center justify-between gap-6">
         <Link href="/" aria-label="Home" className="text-accent">
           <Monogram className="size-8" />
         </Link>
 
-        <nav className="flex items-center gap-6 lg:gap-10">
+        <nav className="flex items-center gap-8 lg:gap-12">
           {contact.socials.map((social) => (
             <a
               key={social.label}
