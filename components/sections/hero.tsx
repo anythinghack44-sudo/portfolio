@@ -2,9 +2,9 @@ import { hero, site } from '@/lib/content'
 
 export function Hero() {
   return (
-    <section className="gutter relative flex min-h-svh flex-col justify-end pt-28 pb-10 lg:pt-32">
+    <section className="gutter relative flex min-h-svh flex-col pt-20 pb-10 lg:pt-24 lg:pb-14">
       {/* Availability badge, aligned to the right edge under the nav */}
-      <div className="absolute inset-x-0 top-24 lg:top-28">
+      <div className="absolute inset-x-0 top-[5.5rem] lg:top-28">
         <div className="gutter flex justify-end">
           <p className="type-label flex items-center gap-2.5 text-meta">
             <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-accent" />
@@ -22,14 +22,16 @@ export function Hero() {
         <span className="type-accent block">{hero.accentLine}</span>
       </h1>
 
-      <div className="mt-8 flex items-end justify-between gap-8 lg:mt-10">
-        <div className="flex items-center gap-6 md:gap-10">
-          <p className="max-w-sm text-pretty leading-relaxed text-foreground/85">{hero.intro}</p>
+      <div className="mt-8 flex items-end justify-between gap-6 lg:mt-10 lg:gap-8">
+        <div className="flex items-center gap-6 lg:gap-10">
+          <p className="max-w-[28rem] text-pretty leading-relaxed text-foreground/85 lg:text-lead lg:leading-relaxed">
+            {hero.intro}
+          </p>
 
           <a
             href="#about"
             aria-label="Scroll to about section"
-            className="hidden size-14 shrink-0 items-center justify-center rounded-full border border-accent text-accent hover:bg-accent hover:text-accent-foreground sm:flex"
+            className="hidden size-14 shrink-0 items-center justify-center rounded-full border border-accent text-accent transition-colors hover:bg-accent hover:text-accent-foreground lg:flex"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
               <path
@@ -44,7 +46,7 @@ export function Hero() {
 
         {/* Vertical scroll cue */}
         <div className="hidden flex-col items-center gap-4 lg:flex">
-          <span className="type-label [writing-mode:vertical-rl] text-foreground/70">Scroll</span>
+          <span className="type-label [writing-mode:vertical-rl] text-meta">Scroll</span>
           <span aria-hidden="true" className="h-20 w-px bg-accent" />
         </div>
       </div>
