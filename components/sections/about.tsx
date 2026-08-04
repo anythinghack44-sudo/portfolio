@@ -1,13 +1,13 @@
 import { about } from '@/lib/content'
-import { DeveloperPortrait } from '@/components/developer-portrait'
+import { Portrait } from '@/components/portrait'
 
 export function About() {
   return (
     <section id="about" className="gutter py-20 lg:py-28">
       <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-16">
-        {/* Portrait — geometric developer illustration */}
+        {/* Portrait — real photo with editorial grayscale, SVG fallback */}
         <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:min-h-[36rem]">
-          <DeveloperPortrait className="h-full w-full" />
+          <Portrait />
         </div>
 
         {/* Content column */}
