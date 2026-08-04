@@ -22,14 +22,14 @@ const bodoni = Bodoni_Moda({
 })
 
 export const metadata: Metadata = {
-  title: 'Kaito Mercer — Senior Web Developer',
+  title: 'Hrushikesh Behera — Junior Frontend Engineer',
   description:
-    'Senior web developer crafting considered digital experiences with precision, performance, and intent. Selected work in interface engineering, WebGL, and motion design.',
+    'Junior frontend engineer building clear, responsive digital experiences with thoughtful motion, accessible code, and close attention to detail.',
   generator: 'v0.app',
   openGraph: {
-    title: 'Kaito Mercer — Senior Web Developer',
+    title: 'Hrushikesh Behera — Junior Frontend Engineer',
     description:
-      'Senior web developer crafting considered digital experiences with precision, performance, and intent.',
+      'Frontend portfolio featuring accessible interfaces, thoughtful motion, and selected product work.',
     type: 'website',
   },
   icons: {

@@ -5,10 +5,11 @@
  */
 
 export const site = {
-  name: 'Kaito Mercer',
-  role: 'Senior Web Developer',
-  email: 'hello@yourname.dev',
-  status: 'Available — Mar 2026',
+  name: 'Hrushikesh Behera',
+  role: 'Junior Frontend Engineer',
+  email: 'hello@hrushikesh.dev',
+  location: 'Remote',
+  status: 'Available Mar 2026',
   timezone: 'IST',
 }
 
@@ -24,20 +25,20 @@ export const hero = {
   lines: ['I build', 'interfaces', 'that feel'],
   accentLine: 'inevitable',
   intro:
-    'Senior web developer crafting considered digital experiences with precision, performance, and intent.',
+    'Junior frontend engineer building clear, responsive digital experiences with thoughtful motion, accessible code, and close attention to detail.',
 }
 
 export const about = {
   label: '01 — About',
-  statement: 'I design and build digital experiences that make an impact.',
+  statement: 'I turn useful ideas into interfaces that feel natural to use.',
   paragraphs: [
-    "I'm a senior web developer with a passion for crafting fast, accessible, and engaging websites and applications. I combine clean code with thoughtful design to deliver experiences that are intuitive, performant, and built to last.",
-    "With over eight years of experience, I've had the privilege of collaborating with ambitious teams and clients around the world to bring ideas to life and solve real problems through technology.",
+    "I'm a junior frontend engineer focused on building responsive, accessible products with React, Next.js, and TypeScript. I care about the small decisions—clear hierarchy, purposeful motion, and code that stays understandable as a product grows.",
+    "My work spans education content, messaging, decentralized document storage, and developer learning tools. Each project is a chance to make a complex idea feel direct, dependable, and human.",
   ],
   stats: [
-    { value: '08', label: 'Years' },
-    { value: '40+', label: 'Shipped' },
-    { value: '12', label: 'Awards' },
+    { value: '04', label: 'Projects' },
+    { value: '100%', label: 'Curious' },
+    { value: 'IST', label: 'Timezone' },
   ],
 }
 
@@ -52,19 +53,29 @@ export type Project = {
 export const work = {
   label: '02 — Selected Work',
   projects: [
-    { index: '001', name: 'Kinetic Studio', category: 'Web Design', href: '#case-study' },
+    {
+      index: '001',
+      name: 'CodeWithAnimation',
+      category: 'Software Education Content',
+      href: '#case-study',
+    },
     {
       index: '002',
-      name: 'Meridian Pay',
-      category: 'Development',
+      name: 'Dropnote',
+      category: 'Message App',
       href: '#case-study',
       featured: true,
     },
-    { index: '003', name: 'Nova Systems', category: 'E-Commerce', href: '#case-study' },
+    {
+      index: '003',
+      name: 'Medivault',
+      category: 'Decentralized Medical Document Store',
+      href: '#case-study',
+    },
     {
       index: '004',
-      name: 'Brutal Edition',
-      category: 'Creative Direction',
+      name: 'Dsa Universe',
+      category: 'DSA Learning Platform',
       href: '#case-study',
     },
   ] satisfies Project[],
@@ -72,17 +83,17 @@ export const work = {
 
 export const caseStudy = {
   breadcrumb: 'Work / 002',
-  title: 'Meridian Pay / Reimagining the Checkout',
+  title: 'Dropnote / Making Messages Feel Effortless',
   meta: [
-    { label: 'Role', value: 'Senior Web Developer' },
-    { label: 'Year', value: '2024' },
-    { label: 'Stack', value: 'Next.js, TypeScript, Stripe' },
-    { label: 'Client', value: 'Meridian Pay' },
+    { label: 'Role', value: 'Frontend Engineer' },
+    { label: 'Year', value: '2026' },
+    { label: 'Stack', value: 'Next.js, TypeScript, React' },
+    { label: 'Project', value: 'Dropnote' },
   ],
   challengeLabel: 'The Challenge',
   challenge: [
-    'Meridian Pay’s existing checkout was a conversion bottleneck. It was slow, inconsistent across devices, and lacked the flexibility needed to support their growing product ecosystem. Our challenge was to reimagine the checkout experience—one that was fast, secure, and intuitive, while meeting the highest standards of compliance.',
-    'The solution needed to reduce friction at every step, integrate seamlessly with their backend services, and be extensible enough to support future payment methods and global expansion without sacrificing performance or maintainability.',
+    'Dropnote began with a direct question: how little interface does a message need? The challenge was to keep writing and sharing immediate while still making status, feedback, and navigation clear across screen sizes.',
+    'I shaped the frontend around focused composition, readable conversations, and responsive interaction states. Reusable components and predictable TypeScript models keep the experience consistent while leaving room for the product to grow.',
   ],
 }
 

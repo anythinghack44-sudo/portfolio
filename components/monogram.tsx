@@ -4,7 +4,7 @@ export function Monogram({ className = 'size-8' }: { className?: string }) {
       viewBox="0 0 32 32"
       className={className}
       role="img"
-      aria-label="Kaito Mercer home"
+      aria-label="Hrushikesh Behera home"
       fill="none"
       strokeWidth="1.5"
     >
