@@ -7,14 +7,17 @@ export function About() {
       <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-16">
         {/* Portrait — real photo */}
         <div data-motion="clip" className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:min-h-[36rem]">
-          <Image
-            src="/images/portrait.png"
-            alt="Portrait of Hrushikesh Behera working at his desk"
-            fill
-            className="object-cover"
-            sizes="(min-width: 1024px) 42vw, 100vw"
-            priority
-          />
+          {/* Inner layer is oversized so the scrubbed parallax never exposes an edge */}
+          <div data-motion="parallax" data-parallax="8" className="absolute -inset-[6%] will-change-transform">
+            <Image
+              src="/images/portrait.png"
+              alt="Portrait of Hrushikesh Behera working at his desk"
+              fill
+              className="object-cover"
+              sizes="(min-width: 1024px) 42vw, 100vw"
+              priority
+            />
+          </div>
         </div>
 
         {/* Content column */}

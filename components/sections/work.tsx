@@ -22,7 +22,8 @@ export function Work() {
 
                 {/* Project name */}
                 <h3
-                  className={`type-statement text-balance ${
+                  data-motion="skew"
+                  className={`type-statement origin-left text-balance will-change-transform ${
                     project.featured ? 'text-accent' : 'text-foreground'
                   }`}
                 >
