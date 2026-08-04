@@ -1,13 +1,20 @@
+import Image from 'next/image'
 import { about } from '@/lib/content'
-import { DeveloperPortrait } from '@/components/developer-portrait'
 
 export function About() {
   return (
     <section id="about" className="gutter py-20 lg:py-28">
       <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-16">
-        {/* Portrait — geometric developer illustration */}
+        {/* Portrait — real photo */}
         <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:min-h-[36rem]">
-          <DeveloperPortrait className="h-full w-full" />
+          <Image
+            src="/images/portrait.png"
+            alt="Portrait of Hrushikesh Behera working at his desk"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 42vw, 100vw"
+            priority
+          />
         </div>
 
         {/* Content column */}
