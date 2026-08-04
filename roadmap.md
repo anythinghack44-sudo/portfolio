@@ -424,9 +424,9 @@ export function useRevealOnScroll(ref: React.RefObject<HTMLElement>) {
 simply see the finished static layout from Phase 4.
 
 ### Exit gate
-- [ ] Scroll feels weighted, no stutter, no double-loop jitter
-- [ ] `position: sticky` still works
-- [ ] Reduced-motion OS setting yields the static site with zero broken states
+- [x] Scroll feels weighted, no stutter, no double-loop jitter
+- [x] `position: sticky` still works
+- [x] Reduced-motion OS setting yields the static site with zero broken states
 
 ---
 

@@ -7,28 +7,46 @@ export function Capabilities() {
   const marqueeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const marquee = marqueeRef.current
-    if (!marquee) return
+    const currentMarquee = marqueeRef.current
+    if (!currentMarquee) return
+    const marquee: HTMLDivElement = currentMarquee
 
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     let scrollPosition = 0
-    const speed = 0.5 // pixels per frame
+    let animationFrame = 0
+    const speed = 0.5
 
     function animate() {
       scrollPosition += speed
-      if (marquee) {
-        marquee.style.transform = `translateX(-${scrollPosition}px)`
-        
-        // Reset when first set has scrolled past
-        const firstSet = marquee.firstElementChild as HTMLElement
-        if (firstSet && scrollPosition >= firstSet.offsetWidth) {
-          scrollPosition = 0
-        }
+      marquee.style.transform = `translateX(-${scrollPosition}px)`
+
+      const firstSet = marquee.firstElementChild as HTMLElement | null
+      if (firstSet && scrollPosition >= firstSet.offsetWidth) {
+        scrollPosition = 0
       }
-      requestAnimationFrame(animate)
+
+      animationFrame = requestAnimationFrame(animate)
     }
 
-    const raf = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(raf)
+    function updateMotionPreference() {
+      cancelAnimationFrame(animationFrame)
+
+      if (mediaQuery.matches) {
+        scrollPosition = 0
+        marquee.style.removeProperty('transform')
+        return
+      }
+
+      animationFrame = requestAnimationFrame(animate)
+    }
+
+    updateMotionPreference()
+    mediaQuery.addEventListener('change', updateMotionPreference)
+
+    return () => {
+      cancelAnimationFrame(animationFrame)
+      mediaQuery.removeEventListener('change', updateMotionPreference)
+    }
   }, [])
 
   return (

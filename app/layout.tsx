@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Archivo, Bodoni_Moda } from 'next/font/google'
 import { GrainOverlay } from '@/components/grain-overlay'
+import { SmoothScroll } from '@/components/smooth-scroll'
 import './globals.css'
 
 // One grotesque family. The `wdth` axis gives us the condensed display
@@ -56,7 +57,7 @@ export default function RootLayout({
     <html lang="en" className={`bg-background ${archivo.variable} ${bodoni.variable}`}>
       <body className="bg-background text-foreground antialiased">
         <GrainOverlay />
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
