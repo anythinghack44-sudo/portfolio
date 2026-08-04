@@ -22,8 +22,9 @@ export function SiteFooter() {
   }, [])
 
   return (
-    <footer className="gutter border-t border-border py-8">
-      <div className="flex items-center justify-between gap-6">
+    <footer className="gutter pb-8">
+      <div data-motion="line" className="h-px bg-border" />
+      <div data-motion="fade" className="flex items-center justify-between gap-6 pt-8">
         <Link href="/" aria-label="Home" className="text-accent">
           <Monogram className="size-8" />
         </Link>

@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Archivo, Bodoni_Moda } from 'next/font/google'
 import { GrainOverlay } from '@/components/grain-overlay'
+import { SmoothScroll } from '@/components/smooth-scroll'
 import './globals.css'
 
 // One grotesque family. The `wdth` axis gives us the condensed display
@@ -22,14 +23,14 @@ const bodoni = Bodoni_Moda({
 })
 
 export const metadata: Metadata = {
-  title: 'Kaito Mercer — Senior Web Developer',
+  title: 'Hrushikesh Behera — Junior Frontend Engineer',
   description:
-    'Senior web developer crafting considered digital experiences with precision, performance, and intent. Selected work in interface engineering, WebGL, and motion design.',
+    'Junior frontend engineer building clear, responsive digital experiences with thoughtful motion, accessible code, and close attention to detail.',
   generator: 'v0.app',
   openGraph: {
-    title: 'Kaito Mercer — Senior Web Developer',
+    title: 'Hrushikesh Behera — Junior Frontend Engineer',
     description:
-      'Senior web developer crafting considered digital experiences with precision, performance, and intent.',
+      'Frontend portfolio featuring accessible interfaces, thoughtful motion, and selected product work.',
     type: 'website',
   },
   icons: {
@@ -56,7 +57,7 @@ export default function RootLayout({
     <html lang="en" className={`bg-background ${archivo.variable} ${bodoni.variable}`}>
       <body className="bg-background text-foreground antialiased">
         <GrainOverlay />
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

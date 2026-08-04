@@ -4,13 +4,14 @@ import { work } from '@/lib/content'
 export function Work() {
   return (
     <section id="work" className="gutter py-20 lg:py-28">
-      <div className="mb-12 border-t border-border pt-6 lg:mb-16 lg:pt-8">
-        <p className="type-label text-meta">{work.label}</p>
+      <div className="mb-12 lg:mb-16">
+        <div data-motion="line" className="h-px bg-border" />
+        <p data-motion="fade" className="type-label pt-6 text-meta lg:pt-8">{work.label}</p>
       </div>
 
-      <div className="space-y-0">
+      <div data-motion="fade-group" className="space-y-0">
         {work.projects.map((project, idx) => (
-          <article key={project.index}>
+          <article key={project.index} data-motion="fade" data-motion-grouped>
             <Link
               href={project.href}
               className="group relative block border-t border-border py-10 transition-colors hover:bg-surface/50 lg:py-12"
@@ -30,7 +31,7 @@ export function Work() {
 
                 {/* Thumbnail - only on featured project, desktop only */}
                 {project.featured && (
-                  <div className="relative hidden aspect-[16/9] w-64 overflow-hidden bg-muted lg:block">
+                  <div data-motion="clip" className="relative hidden aspect-[16/9] w-64 overflow-hidden bg-muted lg:block">
                     <div className="absolute inset-0 flex items-center justify-center">
                       {/* Placeholder architectural thumbnail */}
                       <svg

@@ -55,22 +55,22 @@ pnpm add three @react-three/fiber @react-three/drei
 ```
 
 ### Exit gate
-- [ ] Stack agreed, dependencies installed
-- [ ] Persona + copy written (see below) — real copy before mockups, always
+- [x] Stack agreed, dependencies installed
+- [x] Persona + copy written (see below) — real copy before mockups, always
 
-### Persona & copy (invented — edit freely)
+### Persona & copy
 
 ```
-Name:      Kaito Mercer
-Role:      Senior Frontend Engineer / Interface Designer
+Name:      Hrushikesh Behera
+Role:      Junior Frontend Engineer
 Tagline:   I build interfaces that feel inevitable.
 Location:  Remote — IST
 Status:    Available Mar 2026
 Sections:  Hero / About / Selected Work / Case Study / Lab / Capabilities / Contact
-Projects:  001 Aperture — realtime video editor
-           002 Lumen Bank — financial dashboard
-           003 Northwind — logistics platform
-           004 Studio Fold — agency site
+Projects:  001 CodeWithAnimation — Software Education Content
+           002 Dropnote — Message App
+           003 Medivault — Decentralized Medical Document Store
+           004 Dsa Universe — DSA Learning Platform
 ```
 
 ---
@@ -424,9 +424,9 @@ export function useRevealOnScroll(ref: React.RefObject<HTMLElement>) {
 simply see the finished static layout from Phase 4.
 
 ### Exit gate
-- [ ] Scroll feels weighted, no stutter, no double-loop jitter
-- [ ] `position: sticky` still works
-- [ ] Reduced-motion OS setting yields the static site with zero broken states
+- [x] Scroll feels weighted, no stutter, no double-loop jitter
+- [x] `position: sticky` still works
+- [x] Reduced-motion OS setting yields the static site with zero broken states
 
 ---
 

@@ -6,10 +6,11 @@ import { Lab } from '@/components/sections/lab'
 import { Capabilities } from '@/components/sections/capabilities'
 import { Contact } from '@/components/sections/contact'
 import { SiteFooter } from '@/components/site-footer'
+import { MotionReveals } from '@/components/motion-reveals'
 
 export default function Page() {
   return (
-    <>
+    <MotionReveals>
       <SiteNav />
       <main>
         <Hero />
@@ -20,6 +21,6 @@ export default function Page() {
         <Contact />
       </main>
       <SiteFooter />
-    </>
+    </MotionReveals>
   )
 }

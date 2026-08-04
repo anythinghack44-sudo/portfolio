@@ -5,6 +5,8 @@ function ExperimentCard({ experiment }: { experiment: Experiment }) {
   return (
     <a
       href="#"
+      data-motion="fade"
+      data-motion-grouped
       className={`group block border bg-surface/50 p-6 transition-colors lg:p-7 ${
         experiment.featured
           ? 'border-accent'
@@ -28,12 +30,12 @@ export function Lab() {
     <section id="lab" className="gutter py-20 lg:py-28">
       {/* Section label with hairline */}
       <div className="mb-12 flex items-center gap-6 lg:mb-16">
-        <h2 className="type-label text-meta">{lab.label}</h2>
-        <div className="h-px flex-1 bg-border" />
+        <h2 data-motion="fade" className="type-label text-meta">{lab.label}</h2>
+        <div data-motion="line" className="h-px flex-1 bg-border" />
       </div>
 
       {/* Staggered 4-column grid */}
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
+      <div data-motion="fade-group" className="grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
         {lab.columns.map((column, colIndex) => (
           <div
             key={colIndex}
