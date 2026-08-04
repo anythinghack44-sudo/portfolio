@@ -49,7 +49,7 @@ export function Capabilities() {
   )
 
   return (
-    <section ref={sectionRef} className="overflow-hidden py-20 lg:py-28">
+    <section ref={sectionRef} data-invert-zone className="zone overflow-hidden py-20 lg:py-28">
       {/* Infinite horizontal marquee */}
       <div className="relative mb-20 overflow-hidden lg:mb-24">
         <div ref={marqueeRef} className="flex w-max whitespace-nowrap will-change-transform">
@@ -60,13 +60,13 @@ export function Capabilities() {
                 return (
                   <span
                     key={`${setIndex}-${wordIndex}`}
-                    className={`type-display ${isAccent ? 'text-accent' : 'text-foreground'}`}
+                    className={`type-display ${isAccent ? 'zone-accent' : ''}`}
                   >
                     {word}
                   </span>
                 )
               })}
-              <span className="type-display text-foreground/40" aria-hidden="true">•</span>
+              <span className="type-display opacity-40" aria-hidden="true">•</span>
             </div>
           ))}
         </div>
@@ -79,11 +79,11 @@ export function Capabilities() {
             key={pillar.index}
             data-motion="fade"
             data-motion-grouped
-            className="border-t border-border pt-10 lg:pt-12"
+            className="zone-rule border-t pt-10 lg:pt-12"
           >
-            <p className="type-label mb-5 text-accent">{pillar.index}</p>
-            <h3 className="type-subhead mb-5 text-foreground">{pillar.title}</h3>
-            <p className="text-pretty leading-relaxed text-foreground/80">{pillar.body}</p>
+            <p className="type-label zone-accent mb-5">{pillar.index}</p>
+            <h3 className="type-subhead mb-5">{pillar.title}</h3>
+            <p className="text-pretty leading-relaxed opacity-80">{pillar.body}</p>
           </div>
         ))}
       </div>

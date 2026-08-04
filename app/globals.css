@@ -106,6 +106,29 @@
     text-transform: uppercase;
   }
 
+  /* Column headings — capabilities pillars */
+  .type-subhead {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-stretch: 82%;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  /* Horizontal gallery panel titles — narrower measure than the index rows */
+  .type-panel {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-stretch: 78%;
+    font-size: clamp(1.5rem, 2.4vw, 2.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
   /* Capabilities marquee band */
   .type-marquee {
     font-family: var(--font-sans);
@@ -127,6 +150,32 @@
     color: var(--color-accent);
     letter-spacing: -0.005em;
     text-transform: uppercase;
+  }
+
+  /* Theme-inversion zone (Phase 6, Tier 2).
+     GSAP tweens the --zone-* custom properties as the section enters, so a
+     whole band can flip from dark to light without touching global tokens.
+     The defaults below are the static, reduced-motion state. */
+  .zone {
+    --zone-bg: var(--color-background);
+    --zone-fg: var(--color-foreground);
+    --zone-muted: var(--color-meta);
+    --zone-border: var(--color-border);
+    --zone-accent: var(--color-accent);
+    background-color: var(--zone-bg);
+    color: var(--zone-fg);
+  }
+
+  .zone-accent {
+    color: var(--zone-accent);
+  }
+
+  .zone-muted {
+    color: var(--zone-muted);
+  }
+
+  .zone-rule {
+    border-color: var(--zone-border);
   }
 
   /* 11px uppercase letterspaced meta labels */

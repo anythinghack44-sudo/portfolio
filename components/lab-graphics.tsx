@@ -13,11 +13,11 @@ function WaveFold() {
   // 24 vertical lines that progressively bend into a sine wave.
   const lines = Array.from({ length: 24 }, (_, i) => {
     const x = 6 + i * 4
-    const amp = (i / 23) ** 2 * 9
+    const amp = Number(((i / 23) ** 2 * 9).toFixed(2))
     return (
       <path
         key={i}
-        d={`M${x} 6 C ${x + amp} 26, ${x - amp} 48, ${x} 68`}
+        d={`M${x} 6 C ${(x + amp).toFixed(2)} 26, ${(x - amp).toFixed(2)} 48, ${x} 68`}
         className={STROKE}
         strokeWidth="0.6"
         fill="none"
@@ -85,7 +85,8 @@ function RayTrace() {
     return (
       <path
         key={i}
-        d={`M8 44 L${8 + Math.cos(angle) * 96} ${44 + Math.sin(angle) * 96}`}
+        // Rounded so server and client render byte-identical path data.
+        d={`M8 44 L${(8 + Math.cos(angle) * 96).toFixed(2)} ${(44 + Math.sin(angle) * 96).toFixed(2)}`}
         className={STROKE}
         strokeWidth="0.5"
       />

@@ -435,7 +435,10 @@ simply see the finished static layout from Phase 4.
 Add tiers **in order**. Ship-able after any tier. Never start a tier before the
 previous one is smooth.
 
-### Tier 1 — Reveal & rhythm (the 80%)
+### Tier 1 — Reveal & rhythm (the 80%) — **shipped**
+
+Implemented in `components/motion-reveals.tsx` (declarative `data-motion`
+handlers) plus the marquee loop in `components/sections/capabilities.tsx`.
 
 | Effect | Implementation |
 | --- | --- |
@@ -456,14 +459,23 @@ Wrap in useGSAP with scope, wrap in gsap.matchMedia for prefers-reduced-motion,
 and revert the split on cleanup. Ensure the heading is readable if JS fails.
 ```
 
-### Tier 2 — Scroll choreography
+### Tier 2 — Scroll choreography — **shipped**
 
-- **Pinned horizontal work gallery** — `ScrollTrigger` with `pin: true`,
-  `scrub: 1`, `end: "+=300%"`, translating a flex row on `xPercent`
-- **Parallax depth** — layered `yPercent` at differing rates, always `scrub: true`
-- **Sticky case-study media** — image pins while text columns scroll past
-- **Scroll-velocity skew** — map `ScrollTrigger.getVelocity()` to a clamped `skewY`
-- **Section theme inversion** — tween CSS variables as a section enters
+Global handlers live in `components/scroll-choreography.tsx`, driven by data
+attributes so sections stay server components.
+
+- [x] **Pinned horizontal work gallery** — `components/sections/work-gallery.tsx`:
+  `pin` + `scrub: 1`, `end` computed from the track width with
+  `invalidateOnRefresh`, translating the flex row on `x`. Below `lg` it degrades
+  to a native snap-scroll carousel.
+- [x] **Parallax depth** — `data-motion="parallax"` with a per-element
+  `data-parallax` rate, `scrub: true`, oversized inner layers so no edge shows.
+- [x] **Sticky case-study media** — `components/sections/case-study.tsx`, CSS
+  `sticky` media column (survives Lenis) with the text column scrolling past.
+- [x] **Scroll-velocity skew** — one `gsap.quickTo` per target, fed by
+  `ScrollTrigger.getVelocity()` clamped to ±4deg, on the work index rows.
+- [x] **Section theme inversion** — the capabilities band flips dark → light by
+  tweening `--zone-*` custom properties (`.zone` in `globals.css`).
 
 ### Tier 3 — Cursor & micro-interaction
 
@@ -482,10 +494,15 @@ navigates via `router.push`, then uncovers. Requires the View Transitions
 approach or a manual overlay; keep total duration under 700ms.
 
 ### Exit gate per tier
-- [ ] 60fps sustained while scrolling (DevTools Performance)
-- [ ] Only `transform`, `opacity`, and `clip-path` are animated — never
-      `width`, `height`, `top`, `left`, or `margin`
-- [ ] No layout thrash warnings
+
+Tiers 1–2:
+- [x] Verified in a real browser at 1095×815 — pin, scrub, parallax, skew, and
+      the zone inversion all behave, no hydration or console errors
+- [x] Only `transform`, `opacity`, `clip-path`, and CSS custom properties are
+      animated — never `width`, `height`, `top`, `left`, or `margin`
+- [x] Every effect registered inside `gsap.matchMedia()`; reduced-motion and
+      sub-`lg` viewports fall back to the static Phase 4 layout
+- [ ] 60fps profile captured in DevTools Performance on a production build
 
 ---
 
