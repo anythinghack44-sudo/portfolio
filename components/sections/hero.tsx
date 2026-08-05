@@ -1,8 +1,13 @@
 import { hero, site } from '@/lib/content'
+import { HeroField } from '@/components/webgl/hero-field'
 
 export function Hero() {
   return (
     <section className="gutter relative flex min-h-svh flex-col pt-20 pb-12 lg:pt-24 lg:pb-16">
+      {/* WebGL mote field, scissored to this section. Renders nothing when the
+          device hasn't opted into the GL layer. */}
+      <HeroField />
+
       {/* Availability badge, aligned to the right edge under the nav */}
       <div className="absolute inset-x-0 top-[5.5rem] lg:top-28">
         <div className="gutter flex justify-end">

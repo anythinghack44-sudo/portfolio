@@ -8,21 +8,28 @@ import { Contact } from '@/components/sections/contact'
 import { SiteFooter } from '@/components/site-footer'
 import { MotionReveals } from '@/components/motion-reveals'
 import { ScrollChoreography } from '@/components/scroll-choreography'
+import { WebglProvider } from '@/lib/webgl/webgl-context'
+import { GlLayer } from '@/components/webgl/gl-layer'
 
 export default function Page() {
   return (
     <MotionReveals>
       <ScrollChoreography>
-        <SiteNav />
-        <main>
-          <Hero />
-          <About />
-          <Work />
-          <Lab />
-          <Capabilities />
-          <Contact />
-        </main>
-        <SiteFooter />
+        {/* One provider decides once whether this device gets GPU work; one
+            canvas hosts every scene as a drei <View>. */}
+        <WebglProvider>
+          <GlLayer />
+          <SiteNav />
+          <main>
+            <Hero />
+            <About />
+            <Work />
+            <Lab />
+            <Capabilities />
+            <Contact />
+          </main>
+          <SiteFooter />
+        </WebglProvider>
       </ScrollChoreography>
     </MotionReveals>
   )

@@ -1,77 +1,33 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import Image from 'next/image'
 import { TransitionLink } from '@/components/transition-link'
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
 import { work } from '@/lib/content'
-
-gsap.registerPlugin(useGSAP)
+import { WorkPreview } from '@/components/webgl/work-preview'
+import { setPreviewPointer, setPreviewTarget } from '@/lib/webgl/work-preview-store'
 
 export function Work() {
   const sectionRef = useRef<HTMLElement>(null)
-  const thumbRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState<string | null>('001')
 
-  // Set up quickTo setters once
-  const quickX = useRef<((val: number) => void) | null>(null)
-  const quickY = useRef<((val: number) => void) | null>(null)
-
-  useGSAP(
-    () => {
-      const thumb = thumbRef.current
-      if (!thumb) return
-
-      quickX.current = gsap.quickTo(thumb, 'x', { duration: 0.35, ease: 'power3.out' })
-      quickY.current = gsap.quickTo(thumb, 'y', { duration: 0.35, ease: 'power3.out' })
-
-      // Hide initially using GSAP set clipPath
-      gsap.set(thumb, { clipPath: 'inset(100% 0% 0% 0%)' })
-    },
-    { scope: sectionRef },
-  )
-
+  /**
+   * Rows no longer own the preview — they publish hover + pointer into a store
+   * and whichever renderer is mounted (WebGL plane or DOM panel) picks it up.
+   * Pointer moves go through the store rather than React state so they never
+   * re-render this list.
+   */
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (quickX.current && quickY.current) {
-      quickX.current(e.clientX + 24)
-      quickY.current(e.clientY - 90)
-    }
+    setPreviewPointer(e.clientX, e.clientY)
   }
 
   const handleMouseEnter = (index: string, e: React.MouseEvent) => {
-    setActiveIndex(index)
-    const thumb = thumbRef.current
-    if (!thumb) return
-
-    if (quickX.current && quickY.current) {
-      // Position instantly without animation for the first frame
-      gsap.set(thumb, { x: e.clientX + 24, y: e.clientY - 90 })
-      // Then start quickTo tracking for subsequent moves
-      quickX.current(e.clientX + 24)
-      quickY.current(e.clientY - 90)
-    }
-
-    gsap.to(thumb, {
-      clipPath: 'inset(0% 0% 0% 0%)',
-      scale: 1.05,
-      duration: 0.45,
-      ease: 'expo.out',
-      overwrite: true,
-    })
+    // `immediate` so the panel appears at the cursor rather than flying in.
+    setPreviewPointer(e.clientX, e.clientY, true)
+    setPreviewTarget(index, true)
   }
 
-  const handleMouseLeave = () => {
-    const thumb = thumbRef.current
-    if (!thumb) return
-
-    gsap.to(thumb, {
-      clipPath: 'inset(100% 0% 0% 0%)',
-      scale: 1,
-      duration: 0.35,
-      ease: 'expo.in',
-      overwrite: true,
-    })
+  const handleMouseLeave = (index: string) => {
+    setPreviewTarget(index, false)
   }
 
   return (
@@ -90,7 +46,7 @@ export function Work() {
               data-project-index={project.index}
               onMouseMove={handleMouseMove}
               onMouseEnter={(e) => handleMouseEnter(project.index, e)}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={() => handleMouseLeave(project.index)}
               className="project-row group relative block border-t border-border py-10 transition-colors hover:bg-surface/50 lg:py-12"
             >
               <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 lg:grid-cols-[auto_1fr_auto_auto_auto] lg:gap-12">
@@ -175,31 +131,9 @@ export function Work() {
         ))}
       </div>
 
-      {/* Floating thumbnail that follows cursor on desktop — now with real images */}
-      <div
-        ref={thumbRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-50 hidden w-[300px] overflow-hidden border border-border/50 bg-surface shadow-2xl lg:block"
-        style={{ boxShadow: '0 0 40px rgba(200, 243, 29, 0.08), 0 25px 50px rgba(0, 0, 0, 0.6)' }}
-      >
-        {work.projects.map((project) => (
-          <div
-            key={project.index}
-            className="aspect-[14/9]"
-            style={{ display: activeIndex === project.index ? 'block' : 'none' }}
-          >
-            <Image
-              src={project.thumbnail}
-              alt={`${project.name} preview`}
-              width={300}
-              height={193}
-              className="h-full w-full object-cover"
-              sizes="300px"
-              priority
-            />
-          </div>
-        ))}
-      </div>
+      {/* Cursor preview. Renders as a displaced shader plane on capable
+          desktops and as the DOM panel everywhere else. */}
+      <WorkPreview />
     </section>
   )
 }
