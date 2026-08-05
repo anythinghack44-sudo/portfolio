@@ -9,25 +9,30 @@
  * page is never dependent on a GPU being available.
  */
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 export type WebglState = {
-  /** WebGL is supported, motion is allowed, and the device looks capable. */
+  /** WebGL is supported, motion is allowed, and data saver is off. */
   enabled: boolean
-  /** Large viewport with a precise pointer — gates cursor-driven effects. */
+  /** Large viewport — gates cursor-driven effects and the Lab object. */
   desktop: boolean
+  /** Permanently fall back to DOM/SVG if the shared renderer fails. */
+  disableWebgl: () => void
 }
 
-const initialState: WebglState = { enabled: false, desktop: false }
+const initialState: WebglState = {
+  enabled: false,
+  desktop: false,
+  disableWebgl: () => undefined,
+}
 
 const WebglContext = createContext<WebglState>(initialState)
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
-const DESKTOP = '(min-width: 1024px) and (pointer: fine)'
+const DESKTOP = '(min-width: 1024px)'
 
 type LimitedNavigator = Navigator & {
   connection?: { saveData?: boolean }
-  deviceMemory?: number
 }
 
 /** One-shot probe: does this browser give us a usable WebGL context? */
@@ -49,43 +54,48 @@ function supportsWebgl(): boolean {
   }
 }
 
-/** Cheap heuristics for devices where a shader layer would hurt more than help. */
-function deviceLooksCapable(): boolean {
-  const nav = navigator as LimitedNavigator
-
-  if (nav.connection?.saveData) return false
-  if (typeof nav.deviceMemory === 'number' && nav.deviceMemory < 4) return false
-  if (typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency < 4) return false
-
-  return true
+function isDataSaverEnabled(): boolean {
+  return Boolean((navigator as LimitedNavigator).connection?.saveData)
 }
 
 export function WebglProvider({ children }: { children: React.ReactNode }) {
   // Always start disabled so server and first client render agree, then upgrade.
-  const [state, setState] = useState<WebglState>(initialState)
+  const [supported, setSupported] = useState(false)
+  const [motionAllowed, setMotionAllowed] = useState(false)
+  const [desktop, setDesktop] = useState(false)
+  const [rendererFailed, setRendererFailed] = useState(false)
+
+  const disableWebgl = useCallback(() => setRendererFailed(true), [])
 
   useEffect(() => {
     const motion = window.matchMedia(REDUCED_MOTION)
-    const desktop = window.matchMedia(DESKTOP)
+    const desktopQuery = window.matchMedia(DESKTOP)
+    const capable = supportsWebgl() && !isDataSaverEnabled()
 
-    // The expensive checks only ever run once per page load.
-    const capable = supportsWebgl() && deviceLooksCapable()
-
-    const sync = () =>
-      setState({
-        enabled: capable && !motion.matches,
-        desktop: desktop.matches,
-      })
+    const sync = () => {
+      setSupported(capable)
+      setMotionAllowed(!motion.matches)
+      setDesktop(desktopQuery.matches)
+    }
 
     sync()
     motion.addEventListener('change', sync)
-    desktop.addEventListener('change', sync)
+    desktopQuery.addEventListener('change', sync)
 
     return () => {
       motion.removeEventListener('change', sync)
-      desktop.removeEventListener('change', sync)
+      desktopQuery.removeEventListener('change', sync)
     }
   }, [])
+
+  const state = useMemo<WebglState>(
+    () => ({
+      enabled: supported && motionAllowed && !rendererFailed,
+      desktop,
+      disableWebgl,
+    }),
+    [desktop, disableWebgl, motionAllowed, rendererFailed, supported],
+  )
 
   return <WebglContext.Provider value={state}>{children}</WebglContext.Provider>
 }

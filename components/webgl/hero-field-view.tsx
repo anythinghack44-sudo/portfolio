@@ -9,7 +9,7 @@
  * field around it gains depth.
  */
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { View } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -27,7 +27,7 @@ function seeded(seed: number) {
   }
 }
 
-function Field() {
+function Field({ visible }: { visible: boolean }) {
   const viewport = useThree((state) => state.viewport)
   const size = useThree((state) => state.size)
 
@@ -89,6 +89,8 @@ function Field() {
   }, [])
 
   useFrame((state, delta) => {
+    if (!visible) return
+
     const clamped = Math.min(delta, 1 / 30)
     uniforms.uTime.value += clamped
     uniforms.uPixelRatio.value = state.viewport.dpr
@@ -117,13 +119,28 @@ function Field() {
 }
 
 export default function HeroFieldView() {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const node = trackRef.current
+    if (!node) return
+
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      rootMargin: '100px 0px',
+    })
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <View
+      ref={trackRef as React.RefObject<HTMLDivElement>}
       // The div is only a tracking rect — pixels land on the shared canvas.
       className="pointer-events-none absolute inset-0"
       aria-hidden="true"
     >
-      <Field />
+      <Field visible={visible} />
     </View>
   )
 }

@@ -217,7 +217,7 @@ varying float vNoise;
 ${SIMPLEX_3D}
 
 void main() {
-  float n = snoise(vec3(normal * 1.6, uTime * 0.12));
+  float n = snoise(position * 1.6 + vec3(0.0, 0.0, uTime * 0.12));
   float amp = 0.14 + uHover * 0.09;
 
   vec3 displaced = position + normal * n * amp;

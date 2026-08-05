@@ -16,6 +16,7 @@ type TargetListener = (target: PreviewTarget) => void
 type PointerListener = (x: number, y: number, immediate: boolean) => void
 
 let target: PreviewTarget = { index: null, hovering: false }
+let pointer: { x: number; y: number; immediate: boolean } | null = null
 
 const targetListeners = new Set<TargetListener>()
 const pointerListeners = new Set<PointerListener>()
@@ -31,6 +32,7 @@ export function setPreviewTarget(index: string | null, hovering: boolean): void 
 
 export function onPreviewTarget(listener: TargetListener): () => void {
   targetListeners.add(listener)
+  listener(target)
   return () => targetListeners.delete(listener)
 }
 
@@ -39,10 +41,12 @@ export function onPreviewTarget(listener: TargetListener): () => void {
  * the preview never flies in from its last resting place.
  */
 export function setPreviewPointer(x: number, y: number, immediate = false): void {
+  pointer = { x, y, immediate }
   for (const listener of pointerListeners) listener(x, y, immediate)
 }
 
 export function onPreviewPointer(listener: PointerListener): () => void {
   pointerListeners.add(listener)
+  if (pointer) listener(pointer.x, pointer.y, true)
   return () => pointerListeners.delete(listener)
 }

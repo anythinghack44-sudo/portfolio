@@ -17,6 +17,8 @@ import { onPreviewPointer, onPreviewTarget } from '@/lib/webgl/work-preview-stor
 const WIDTH = 300
 const OFFSET_X = 24
 const OFFSET_Y = -90
+const HEIGHT = WIDTH * (9 / 14)
+const EDGE = 16
 
 export function WorkPreviewDom() {
   const thumbRef = useRef<HTMLDivElement>(null)
@@ -33,9 +35,10 @@ export function WorkPreviewDom() {
 
     const place = (x: number, y: number, immediate: boolean) => {
       // Keep the panel inside the viewport instead of pushing it off-screen.
-      const maxX = window.innerWidth - WIDTH - 16
-      const nextX = Math.min(x + OFFSET_X, maxX)
-      const nextY = y + OFFSET_Y
+      const maxX = Math.max(EDGE, window.innerWidth - WIDTH - EDGE)
+      const maxY = Math.max(EDGE, window.innerHeight - HEIGHT - EDGE)
+      const nextX = Math.max(EDGE, Math.min(x + OFFSET_X, maxX))
+      const nextY = Math.max(EDGE, Math.min(y + OFFSET_Y, maxY))
 
       if (immediate) {
         gsap.set(thumb, { x: nextX, y: nextY })
