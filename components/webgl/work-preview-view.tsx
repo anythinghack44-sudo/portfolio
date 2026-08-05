@@ -166,6 +166,15 @@ function PreviewPlane() {
     }
 
     const mesh = meshRef.current
+    if (Math.random() < 0.02)
+      console.log('[v0] frame', {
+        mesh: !!mesh,
+        vw: viewport.width,
+        vh: viewport.height,
+        reveal: uniforms.uReveal.value,
+        target: d.revealTarget,
+        tex: !!uniforms.uTo.value,
+      })
     if (!mesh) return
 
     // Fill the tracked rect, with the Phase 7 hover swell.
