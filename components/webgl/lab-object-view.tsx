@@ -11,7 +11,7 @@
  * into refs — never React state — so dragging cannot re-render the section.
  */
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { View } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
@@ -23,8 +23,17 @@ const BASE = new THREE.Color('#14161a')
 /** Shared mutable pointer channel for this one object. */
 type Pointer = { x: number; y: number; hover: number; target: number }
 
-function LabSolid({ pointer }: { pointer: React.RefObject<Pointer> }) {
+function LabSolid({
+  pointer,
+  visible,
+  onReady,
+}: {
+  pointer: React.RefObject<Pointer>
+  visible: boolean
+  onReady: () => void
+}) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const reportedReady = useRef(false)
 
   // Eased values so the object glides toward the cursor instead of snapping.
   const rotation = useRef({ x: 0, y: 0 })
@@ -40,6 +49,8 @@ function LabSolid({ pointer }: { pointer: React.RefObject<Pointer> }) {
   )
 
   useFrame((_, delta) => {
+    if (!visible) return
+
     // Clamp delta so a backgrounded tab cannot produce one huge jump.
     const dt = Math.min(delta, 1 / 30)
     const p = pointer.current
@@ -64,19 +75,40 @@ function LabSolid({ pointer }: { pointer: React.RefObject<Pointer> }) {
     mesh.rotation.x = rotation.current.x
   })
 
+  const handleAfterRender = () => {
+    if (reportedReady.current) return
+    reportedReady.current = true
+    // Defer out of the render loop so it never sets state mid-frame.
+    requestAnimationFrame(onReady)
+  }
+
   return (
-    <mesh ref={meshRef} scale={1.15}>
-      {/* detail 24 gives the displacement enough vertices to stay smooth
-          without the cost of a full sphere tessellation. */}
-      <icosahedronGeometry args={[1, 24]} />
+    <mesh ref={meshRef} scale={1.15} onAfterRender={handleAfterRender}>
+      {/* Detail is recursive subdivision; 5 is smooth enough for displacement
+          without the exponential memory cost of the previous value. */}
+      <icosahedronGeometry args={[1, 5]} />
       <shaderMaterial uniforms={uniforms} vertexShader={LAB_VERTEX} fragmentShader={LAB_FRAGMENT} />
     </mesh>
   )
 }
 
-export default function LabObjectView() {
+export default function LabObjectView({ onReady }: { onReady: () => void }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const pointer = useRef<Pointer>({ x: 0, y: 0, hover: 0, target: 0 })
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const node = trackRef.current
+    if (!node) return
+
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      rootMargin: '100px 0px',
+    })
+    observer.observe(node)
+    onReady()
+
+    return () => observer.disconnect()
+  }, [onReady])
 
   useEffect(() => {
     const node = trackRef.current
@@ -114,7 +146,7 @@ export default function LabObjectView() {
 
   return (
     <View ref={trackRef as React.RefObject<HTMLDivElement>} className="h-full w-full">
-      <LabSolid pointer={pointer} />
+      <LabSolid pointer={pointer} visible={visible} />
     </View>
   )
 }

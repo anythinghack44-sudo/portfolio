@@ -44,7 +44,7 @@ export function TransitionOverlay() {
     if (!overlay || !accent) return
 
     // Only uncover if we are currently covered (scaleY > 0)
-    const currentScaleY = gsap.getProperty(overlay, 'scaleY')
+    const currentScaleY = Number(gsap.getProperty(overlay, 'scaleY'))
     if (currentScaleY > 0) {
       // Uncover phase: sweep up to top
       // Change transform origin to top to sweep away upwards

@@ -28,6 +28,8 @@ const WIDTH = 300
 const OFFSET_X = 24
 const OFFSET_Y = -90
 const PLANE_ASPECT = 14 / 9
+const HEIGHT = WIDTH / PLANE_ASPECT
+const EDGE = 16
 
 const THUMBNAILS = work.projects.map((project) => project.thumbnail)
 
@@ -176,9 +178,10 @@ export default function WorkPreviewView() {
     const quickY = gsap.quickTo(node, 'y', { duration: 0.35, ease: 'power3.out' })
 
     const off = onPreviewPointer((x, y, immediate) => {
-      const maxX = window.innerWidth - WIDTH - 16
-      const nextX = Math.min(x + OFFSET_X, maxX)
-      const nextY = y + OFFSET_Y
+      const maxX = Math.max(EDGE, window.innerWidth - WIDTH - EDGE)
+      const maxY = Math.max(EDGE, window.innerHeight - HEIGHT - EDGE)
+      const nextX = Math.max(EDGE, Math.min(x + OFFSET_X, maxX))
+      const nextY = Math.max(EDGE, Math.min(y + OFFSET_Y, maxY))
 
       if (immediate) gsap.set(node, { x: nextX, y: nextY })
 

@@ -13,7 +13,7 @@
  */
 
 import dynamic from 'next/dynamic'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useWebgl } from '@/lib/webgl/webgl-context'
 import { LabGraphic } from '@/components/lab-graphics'
 import type { Experiment } from '@/lib/content'
@@ -26,8 +26,10 @@ export function LabObject({ graphic }: { graphic: Experiment['graphic'] }) {
   const { enabled, desktop } = useWebgl()
   const holderRef = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
+  const [ready, setReady] = useState(false)
 
   const active = enabled && desktop
+  const handleReady = useCallback(() => setReady(true), [])
 
   useEffect(() => {
     if (!active || near) return
@@ -52,7 +54,12 @@ export function LabObject({ graphic }: { graphic: Experiment['graphic'] }) {
 
   return (
     <div ref={holderRef} className="relative h-full w-full">
-      {active && near ? <LabObjectView /> : <LabGraphic name={graphic} />}
+      <div
+        className={`absolute inset-0 transition-opacity duration-300 ${active && ready ? 'opacity-0' : 'opacity-100'}`}
+      >
+        <LabGraphic name={graphic} />
+      </div>
+      {active && near ? <LabObjectView onReady={handleReady} /> : null}
     </div>
   )
 }
