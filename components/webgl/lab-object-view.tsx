@@ -105,10 +105,9 @@ export default function LabObjectView({ onReady }: { onReady: () => void }) {
       rootMargin: '100px 0px',
     })
     observer.observe(node)
-    onReady()
 
     return () => observer.disconnect()
-  }, [onReady])
+  }, [])
 
   useEffect(() => {
     const node = trackRef.current
@@ -146,7 +145,7 @@ export default function LabObjectView({ onReady }: { onReady: () => void }) {
 
   return (
     <View ref={trackRef as React.RefObject<HTMLDivElement>} className="h-full w-full">
-      <LabSolid pointer={pointer} visible={visible} />
+      <LabSolid pointer={pointer} visible={visible} onReady={onReady} />
     </View>
   )
 }
