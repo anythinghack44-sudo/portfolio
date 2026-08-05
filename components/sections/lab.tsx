@@ -1,5 +1,6 @@
 import { lab, type Experiment } from '@/lib/content'
 import { LabGraphic } from '@/components/lab-graphics'
+import { LabObject } from '@/components/webgl/lab-object'
 
 function ExperimentCard({ experiment }: { experiment: Experiment }) {
   return (
@@ -13,9 +14,14 @@ function ExperimentCard({ experiment }: { experiment: Experiment }) {
           : 'border-border hover:border-foreground/40'
       }`}
     >
-      {/* Graphic */}
+      {/* Graphic. The featured experiment is the section's one interactive
+          object — it upgrades to a WebGL solid when the device allows it. */}
       <div className="mb-8 aspect-[4/3] overflow-hidden lg:mb-10">
-        <LabGraphic name={experiment.graphic} />
+        {experiment.featured ? (
+          <LabObject graphic={experiment.graphic} />
+        ) : (
+          <LabGraphic name={experiment.graphic} />
+        )}
       </div>
 
       {/* Name and date */}
