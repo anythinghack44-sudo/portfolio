@@ -31,7 +31,7 @@ export function Hero() {
           <a
             href="#about"
             aria-label="Scroll to about section"
-            className="hidden size-14 shrink-0 items-center justify-center rounded-full border border-accent text-accent transition-colors hover:bg-accent hover:text-accent-foreground lg:flex"
+            className="hidden size-14 shrink-0 items-center justify-center rounded-full border border-accent text-accent transition-colors hover:text-accent-foreground btn-fill lg:flex"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
               <path

@@ -1,9 +1,81 @@
-import Link from 'next/link'
+'use client'
+
+import { useRef, useState } from 'react'
+import Image from 'next/image'
+import { TransitionLink } from '@/components/transition-link'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 import { work } from '@/lib/content'
 
+gsap.registerPlugin(useGSAP)
+
 export function Work() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const thumbRef = useRef<HTMLDivElement>(null)
+  const [activeIndex, setActiveIndex] = useState<string | null>('001')
+
+  // Set up quickTo setters once
+  const quickX = useRef<((val: number) => void) | null>(null)
+  const quickY = useRef<((val: number) => void) | null>(null)
+
+  useGSAP(
+    () => {
+      const thumb = thumbRef.current
+      if (!thumb) return
+
+      quickX.current = gsap.quickTo(thumb, 'x', { duration: 0.35, ease: 'power3.out' })
+      quickY.current = gsap.quickTo(thumb, 'y', { duration: 0.35, ease: 'power3.out' })
+
+      // Hide initially using GSAP set clipPath
+      gsap.set(thumb, { clipPath: 'inset(100% 0% 0% 0%)' })
+    },
+    { scope: sectionRef },
+  )
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (quickX.current && quickY.current) {
+      quickX.current(e.clientX + 24)
+      quickY.current(e.clientY - 90)
+    }
+  }
+
+  const handleMouseEnter = (index: string, e: React.MouseEvent) => {
+    setActiveIndex(index)
+    const thumb = thumbRef.current
+    if (!thumb) return
+
+    if (quickX.current && quickY.current) {
+      // Position instantly without animation for the first frame
+      gsap.set(thumb, { x: e.clientX + 24, y: e.clientY - 90 })
+      // Then start quickTo tracking for subsequent moves
+      quickX.current(e.clientX + 24)
+      quickY.current(e.clientY - 90)
+    }
+
+    gsap.to(thumb, {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      scale: 1.05,
+      duration: 0.45,
+      ease: 'expo.out',
+      overwrite: true,
+    })
+  }
+
+  const handleMouseLeave = () => {
+    const thumb = thumbRef.current
+    if (!thumb) return
+
+    gsap.to(thumb, {
+      clipPath: 'inset(100% 0% 0% 0%)',
+      scale: 1,
+      duration: 0.35,
+      ease: 'expo.in',
+      overwrite: true,
+    })
+  }
+
   return (
-    <section id="work" className="gutter py-20 lg:py-28">
+    <section ref={sectionRef} id="work" className="gutter py-20 lg:py-28">
       <div className="mb-12 lg:mb-16">
         <div data-motion="line" className="h-px bg-border" />
         <p data-motion="fade" className="type-label pt-6 text-meta lg:pt-8">{work.label}</p>
@@ -12,80 +84,45 @@ export function Work() {
       <div data-motion="fade-group" className="space-y-0">
         {work.projects.map((project, idx) => (
           <article key={project.index} data-motion="fade" data-motion-grouped>
-            <Link
+            <TransitionLink
               href={project.href}
-              className="group relative block border-t border-border py-10 transition-colors hover:bg-surface/50 lg:py-12"
+              data-cursor="project"
+              data-project-index={project.index}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={(e) => handleMouseEnter(project.index, e)}
+              onMouseLeave={handleMouseLeave}
+              className="project-row group relative block border-t border-border py-10 transition-colors hover:bg-surface/50 lg:py-12"
             >
               <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 lg:grid-cols-[auto_1fr_auto_auto_auto] lg:gap-12">
                 {/* Index number */}
                 <span className="type-label text-meta">{project.index}</span>
 
-                {/* Project name */}
-                <h3
-                  data-motion="skew"
-                  className={`type-statement origin-left text-balance will-change-transform ${
-                    project.featured ? 'text-accent' : 'text-foreground'
-                  }`}
-                >
-                  {project.name}
-                </h3>
+                {/* Project name + tagline */}
+                <div className="min-w-0">
+                  <h3
+                    data-motion="skew"
+                    className={`type-statement origin-left text-balance will-change-transform transition-transform duration-300 group-hover:translate-x-2 ${
+                      project.featured ? 'text-accent' : 'text-foreground'
+                    }`}
+                  >
+                    {project.name}
+                  </h3>
+                  {/* Tagline — reveals on hover */}
+                  <p className="project-tagline mt-1 text-sm text-meta opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2">
+                    {project.tagline}
+                  </p>
+                </div>
 
-                {/* Thumbnail - only on featured project, desktop only */}
+                {/* Thumbnail — featured project shows inline on desktop */}
                 {project.featured && (
                   <div data-motion="clip" className="relative hidden aspect-[16/9] w-64 overflow-hidden bg-muted lg:block">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      {/* Placeholder architectural thumbnail */}
-                      <svg
-                        viewBox="0 0 240 135"
-                        className="h-full w-full"
-                        aria-hidden="true"
-                      >
-                        {/* Grid background */}
-                        <rect width="240" height="135" fill="#1a1a1a" />
-                        
-                        {/* Architectural shapes - angular building forms */}
-                        <path
-                          d="M40 85 L40 40 L80 20 L80 65 Z"
-                          fill="#404040"
-                          stroke="#2a2a2a"
-                          strokeWidth="0.5"
-                        />
-                        <path
-                          d="M80 65 L80 20 L140 35 L140 80 Z"
-                          fill="#303030"
-                          stroke="#2a2a2a"
-                          strokeWidth="0.5"
-                        />
-                        <path
-                          d="M140 80 L140 35 L200 50 L200 95 Z"
-                          fill="#353535"
-                          stroke="#2a2a2a"
-                          strokeWidth="0.5"
-                        />
-                        
-                        {/* Ground plane */}
-                        <line
-                          x1="0"
-                          y1="85"
-                          x2="240"
-                          y2="85"
-                          stroke="#c8f31d"
-                          strokeWidth="0.5"
-                        />
-                        
-                        {/* Label */}
-                        <text
-                          x="200"
-                          y="110"
-                          fill="#999"
-                          fontSize="8"
-                          fontFamily="system-ui"
-                          letterSpacing="0.5"
-                        >
-                          MERIDIAN PAY
-                        </text>
-                      </svg>
-                    </div>
+                    <Image
+                      src={project.thumbnail}
+                      alt={`${project.name} preview`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="256px"
+                    />
                   </div>
                 )}
 
@@ -95,10 +132,10 @@ export function Work() {
                 </span>
 
                 {/* Arrow icon */}
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-colors group-hover:border-accent group-hover:text-accent lg:size-12">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 group-hover:border-accent group-hover:text-accent-foreground group-hover:rotate-45 btn-fill lg:size-12">
                   <svg
                     viewBox="0 0 24 24"
-                    className="size-4 lg:size-5"
+                    className="relative z-10 size-4 lg:size-5"
                     fill="none"
                     aria-hidden="true"
                   >
@@ -116,13 +153,51 @@ export function Work() {
               <span className="mt-3 block text-sm uppercase tracking-wider text-meta lg:hidden">
                 {project.category}
               </span>
-            </Link>
+
+              {/* Mobile thumbnail — static inline preview */}
+              <div className="mt-4 aspect-[16/9] w-full overflow-hidden bg-surface lg:hidden">
+                <Image
+                  src={project.thumbnail}
+                  alt={`${project.name} preview`}
+                  width={640}
+                  height={360}
+                  className="h-full w-full object-cover"
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                />
+              </div>
+            </TransitionLink>
 
             {/* Last item gets bottom border */}
             {idx === work.projects.length - 1 && (
               <div className="border-t border-border" />
             )}
           </article>
+        ))}
+      </div>
+
+      {/* Floating thumbnail that follows cursor on desktop — now with real images */}
+      <div
+        ref={thumbRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed top-0 left-0 z-50 hidden w-[300px] overflow-hidden border border-border/50 bg-surface shadow-2xl lg:block"
+        style={{ boxShadow: '0 0 40px rgba(200, 243, 29, 0.08), 0 25px 50px rgba(0, 0, 0, 0.6)' }}
+      >
+        {work.projects.map((project) => (
+          <div
+            key={project.index}
+            className="aspect-[14/9]"
+            style={{ display: activeIndex === project.index ? 'block' : 'none' }}
+          >
+            <Image
+              src={project.thumbnail}
+              alt={`${project.name} preview`}
+              width={300}
+              height={193}
+              className="h-full w-full object-cover"
+              sizes="300px"
+              priority
+            />
+          </div>
         ))}
       </div>
     </section>

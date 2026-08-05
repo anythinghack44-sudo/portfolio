@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { TransitionLink } from '@/components/transition-link'
 import { Monogram } from '@/components/monogram'
 import { contact, site } from '@/lib/content'
 
@@ -25,9 +25,9 @@ export function SiteFooter() {
     <footer className="gutter pb-8">
       <div data-motion="line" className="h-px bg-border" />
       <div data-motion="fade" className="flex items-center justify-between gap-6 pt-8">
-        <Link href="/" aria-label="Home" className="text-accent">
+        <TransitionLink href="/" aria-label="Home" className="text-accent">
           <Monogram className="size-8" />
-        </Link>
+        </TransitionLink>
 
         <nav className="flex items-center gap-8 lg:gap-12">
           {contact.socials.map((social) => (
@@ -36,7 +36,7 @@ export function SiteFooter() {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="type-label text-meta transition-colors hover:text-accent"
+              className="type-label text-meta transition-colors hover:text-accent link-draw"
             >
               {social.label}
             </a>

@@ -502,7 +502,7 @@ Tiers 1–2:
       animated — never `width`, `height`, `top`, `left`, or `margin`
 - [x] Every effect registered inside `gsap.matchMedia()`; reduced-motion and
       sub-`lg` viewports fall back to the static Phase 4 layout
-- [ ] 60fps profile captured in DevTools Performance on a production build
+- [x] 60fps profile captured in DevTools Performance on a production build
 
 ---
 

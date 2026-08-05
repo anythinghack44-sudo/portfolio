@@ -189,6 +189,136 @@
   }
 }
 
+/* ============================================================
+   TIER 3 — MICRO-INTERACTIONS
+   ============================================================ */
+
+/* Hide default cursor on desktop when custom cursor is active */
+@media (pointer: fine) {
+  html.custom-cursor-active,
+  html.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* Button fill wipe from bottom */
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.btn-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-accent);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-fill:hover::before,
+.group:hover .btn-fill::before {
+  transform: scaleY(1);
+}
+
+/* Link underline draw on scaleX */
+.link-draw {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.link-draw::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+  pointer-events: none;
+}
+
+.link-draw:hover::after {
+  transform: scaleX(1);
+}
+
+/* Project row — accent underline wipe on hover */
+.project-row {
+  position: relative;
+}
+
+.project-row::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+  pointer-events: none;
+}
+
+.project-row:hover::after {
+  transform: scaleX(1);
+}
+
+/* Image parallax container */
+.image-parallax {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-parallax img {
+  will-change: transform;
+}
+
+/* Case study metadata grid */
+.case-study-meta > div {
+  min-width: 0;
+}
+
+/* Feature card hover lift */
+.feature-card {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-4px);
+}
+
+/* Project tagline transition */
+.project-tagline {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.group:hover .project-tagline {
+  max-height: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-fill::before,
+  .link-draw::after {
+    transition: none;
+  }
+}
+
 @layer utilities {
   /* Shared page gutter, matched to the mockups' 4% side margin */
   .gutter {

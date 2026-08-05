@@ -2,7 +2,12 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Archivo, Bodoni_Moda } from 'next/font/google'
 import { GrainOverlay } from '@/components/grain-overlay'
+import { CustomCursor } from '@/components/custom-cursor'
 import { SmoothScroll } from '@/components/smooth-scroll'
+import { TransitionProvider } from '@/context/transition-context'
+import { TransitionOverlay } from '@/components/transition-overlay'
+import { ScrollProgress } from '@/components/scroll-progress'
+import { SpinningBadge } from '@/components/spinning-badge'
 import './globals.css'
 
 // One grotesque family. The `wdth` axis gives us the condensed display
@@ -56,9 +61,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`bg-background ${archivo.variable} ${bodoni.variable}`}>
       <body className="bg-background text-foreground antialiased">
-        <GrainOverlay />
-        <SmoothScroll>{children}</SmoothScroll>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <TransitionProvider>
+          <GrainOverlay />
+          <CustomCursor />
+          <SmoothScroll>{children}</SmoothScroll>
+          <TransitionOverlay />
+          <ScrollProgress />
+          <SpinningBadge />
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </TransitionProvider>
       </body>
     </html>
   )
