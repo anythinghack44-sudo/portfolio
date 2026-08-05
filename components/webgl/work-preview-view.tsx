@@ -11,6 +11,12 @@
  * The reveal lives in the shader rather than in CSS clip-path, because a drei
  * <View> is scissored to the tracked element's bounding box and cannot be
  * clipped by CSS.
+ *
+ * Uniforms are created exactly once and driven from the frame loop. They are
+ * deliberately NOT tweened by GSAP: `useTexture` hands back a fresh array on
+ * some renders, and anything memoised against it (including a uniforms object)
+ * would be replaced mid-tween — which silently stranded `uReveal` at 0 and made
+ * the whole panel invisible.
  */
 
 import { Suspense, useEffect, useMemo, useRef } from 'react'
@@ -24,9 +30,9 @@ import { onPreviewPointer, onPreviewTarget } from '@/lib/webgl/work-preview-stor
 
 const ACCENT = new THREE.Color('#c8f31d')
 
-const WIDTH = 300
-const OFFSET_X = 24
-const OFFSET_Y = -90
+const WIDTH = 320
+const OFFSET_X = 28
+const OFFSET_Y = -96
 const PLANE_ASPECT = 14 / 9
 const HEIGHT = WIDTH / PLANE_ASPECT
 const EDGE = 16
@@ -50,6 +56,25 @@ function PreviewPlane() {
   const viewport = useThree((state) => state.viewport)
 
   const meshRef = useRef<THREE.Mesh>(null)
+
+  /** Created once, mutated forever. Never rebuilt from a render-scoped value. */
+  const uniforms = useMemo(
+    () => ({
+      uFrom: { value: null as THREE.Texture | null },
+      uTo: { value: null as THREE.Texture | null },
+      uCoverFrom: { value: new THREE.Vector2(1, 1) },
+      uCoverTo: { value: new THREE.Vector2(1, 1) },
+      uProgress: { value: 1 },
+      uReveal: { value: 0 },
+      uHover: { value: 0 },
+      uTime: { value: 0 },
+      uAccent: { value: ACCENT },
+    }),
+    [],
+  )
+
+  /** Eased-toward values, advanced in the frame loop. */
+  const drive = useRef({ revealTarget: 0, hoverTarget: 0, crossfading: false })
   const activeIndex = useRef<string | null>(null)
 
   // Texture + cover factors keyed by project index.
@@ -71,37 +96,24 @@ function PreviewPlane() {
     return map
   }, [textures])
 
-  const uniforms = useMemo(() => {
-    const first = byIndex.get(work.projects[0].index)
+  // Seed the uniforms with the first project so the very first frame after a
+  // hover already has a valid sampler bound.
+  useEffect(() => {
+    if (uniforms.uTo.value) return
 
-    return {
-      uFrom: { value: first?.texture ?? null },
-      uTo: { value: first?.texture ?? null },
-      uCoverFrom: { value: first?.cover.clone() ?? new THREE.Vector2(1, 1) },
-      uCoverTo: { value: first?.cover.clone() ?? new THREE.Vector2(1, 1) },
-      uProgress: { value: 0 },
-      uReveal: { value: 0 },
-      uHover: { value: 0 },
-      uTime: { value: 0 },
-      uAccent: { value: ACCENT },
-    }
-  }, [byIndex])
+    const first = byIndex.get(work.projects[0].index)
+    if (!first) return
+
+    uniforms.uFrom.value = first.texture
+    uniforms.uTo.value = first.texture
+    uniforms.uCoverFrom.value.copy(first.cover)
+    uniforms.uCoverTo.value.copy(first.cover)
+  }, [byIndex, uniforms])
 
   useEffect(() => {
     const off = onPreviewTarget(({ index, hovering }) => {
-      gsap.to(uniforms.uReveal, {
-        value: hovering ? 1 : 0,
-        duration: hovering ? 0.55 : 0.35,
-        ease: hovering ? 'expo.out' : 'expo.in',
-        overwrite: true,
-      })
-
-      gsap.to(uniforms.uHover, {
-        value: hovering ? 1 : 0,
-        duration: 0.4,
-        ease: 'power2.out',
-        overwrite: true,
-      })
+      drive.current.revealTarget = hovering ? 1 : 0
+      drive.current.hoverTarget = hovering ? 1 : 0
 
       if (!index || index === activeIndex.current) return
 
@@ -114,7 +126,8 @@ function PreviewPlane() {
         uniforms.uCoverFrom.value.copy(next.cover)
         uniforms.uTo.value = next.texture
         uniforms.uCoverTo.value.copy(next.cover)
-        uniforms.uProgress.value = 0
+        uniforms.uProgress.value = 1
+        drive.current.crossfading = false
       } else {
         // Bake whatever is on screen into `from`, then displace across to the
         // new target. Rapid row-to-row movement snaps rather than queueing.
@@ -123,26 +136,34 @@ function PreviewPlane() {
         uniforms.uTo.value = next.texture
         uniforms.uCoverTo.value.copy(next.cover)
         uniforms.uProgress.value = 0
-
-        gsap.to(uniforms.uProgress, {
-          value: 1,
-          duration: 0.7,
-          ease: 'power2.inOut',
-          overwrite: true,
-        })
+        drive.current.crossfading = true
       }
 
       activeIndex.current = index
     })
 
-    return () => {
-      off()
-      gsap.killTweensOf([uniforms.uReveal, uniforms.uHover, uniforms.uProgress])
-    }
+    return off
   }, [byIndex, uniforms])
 
   useFrame((_, delta) => {
-    uniforms.uTime.value += Math.min(delta, 1 / 30)
+    const dt = Math.min(delta, 1 / 30)
+    uniforms.uTime.value += dt
+
+    const d = drive.current
+
+    // Frame-rate independent exponential easing. The wipe closes faster than it
+    // opens so leaving a row feels crisp rather than laggy.
+    const revealRate = d.revealTarget > uniforms.uReveal.value ? 0.0015 : 0.00002
+    const revealEase = 1 - Math.pow(revealRate, dt)
+    uniforms.uReveal.value += (d.revealTarget - uniforms.uReveal.value) * revealEase
+
+    const hoverEase = 1 - Math.pow(0.002, dt)
+    uniforms.uHover.value += (d.hoverTarget - uniforms.uHover.value) * hoverEase
+
+    if (d.crossfading) {
+      uniforms.uProgress.value = Math.min(1, uniforms.uProgress.value + dt / 0.7)
+      if (uniforms.uProgress.value >= 1) d.crossfading = false
+    }
 
     const mesh = meshRef.current
     if (!mesh) return
@@ -200,8 +221,8 @@ export default function WorkPreviewView() {
       // Tracked rect only. No `hidden` class: a display:none element reports a
       // zero-size box, which would feed NaN into the shared camera's aspect.
       ref={trackRef as React.RefObject<HTMLDivElement>}
-      className="pointer-events-none fixed top-0 left-0 w-[300px]"
-      style={{ aspectRatio: '14 / 9' }}
+      className="pointer-events-none fixed top-0 left-0"
+      style={{ width: WIDTH, aspectRatio: '14 / 9' }}
       aria-hidden="true"
     >
       <Suspense fallback={null}>
